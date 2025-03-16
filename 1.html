@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <form action="https://www.lovepartya.com/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="上传文件">
+    </form>
+	<button onClick="a()">aaa</button>
+	<script>
+		function a() {
+			console.log(11)
+			console.log(document.getElementsByTagName('input')[0].files)
+		}
+	</script>
+</body>
+</html>

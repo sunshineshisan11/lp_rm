@@ -1,0 +1,40 @@
+.flex {
+	display: flex;
+}
+.center {
+	justify-content: center;
+	align-items: center;
+}
+.spaceB {
+	justify-content: space-between;
+}
+.magT20 {
+	margin-top: 20px;
+}
+.magB20 {
+	margin-bottom: 20px;
+}
+.magL20 {
+	margin-left: 20px;
+}
+.magR20 {
+	margin-right: 20px;
+}
+.padT20 {
+	padding-top: 20px;
+}
+.padB20 {
+	padding-bottom: 20px;
+}
+.padL20 {
+	padding-left: 20px;
+}
+.padR20 {
+	padding-right: 20px;
+}
+.fontS25 {
+	font-size: 25px;
+}
+.height100 {
+	height: 100%;
+}
