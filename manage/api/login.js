@@ -32,28 +32,208 @@ const tools = require('../../tools/index')
 //         }
 //     }
 // })
+//系统
+router.get('/set/sys', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `update sysdata SET errorMoney='${request.errorMoney}',profit='${request.profit}',initMoney='${request.initMoney}' where id='${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/get/sys', async (ctx, res, req) => {
+    console.log('正在访问:' + ctx.path)
+    let request = ctx.query;
+    try {
+        console.log(request)
+        var sysSql = `select * from sysdata where switch = 1`
+        var langSql = `select * from lang`
+        const [sysRows] = await pool.execute(sysSql);
+        const [langRows] = await pool.execute(langSql);
+        console.log(sysRows)
+        ctx.body = {
+            code: 0,
+            sysRows,
+            langRows
+        }
+    } catch (error) {
+        console.log(error)
+    }
+})
+//投票
+router.get('/del/vote', async (ctx, res, req) => {
+    console.log('正在访问:' + ctx.path)
+    let request = ctx.query;
+    try {
+        console.log(request)
+        var sql = `delete from vote where id = '${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/set/vote', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `UPDATE vote SET voteId='${request.voteId}',voteNum='${request.voteNum}',date='${request.date}' where id='${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/get/vote', async (ctx, res, req) => {
+    console.log('正在访问:' + ctx.path)
+    let request = ctx.query;
+    try {
+        console.log(request)
+        var sql = `select id,account,voteNum,voteId,date from vote where 1=1`
+        if (request.account && request.account != undefined) {
+            sql += ` and account = '${request.account}'`
+        }
+        if (request.voteNum && request.voteNum != undefined) {
+            sql += ` and voteNum = '${request.voteNum}'`
+        }
+        if (request.pageIndex && request.pageIndex != undefined) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+        }
+        console.log(sql)
+        var countSql = `select count(id) as sum from vote`
+        const [rows] = await pool.execute(sql);
+        const [countRows] = await pool.execute(countSql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows,
+            count: countRows[0].sum
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/add/vote', async (ctx, res, req) => {
+    console.log('正在访问:' + ctx.path)
+    let request = ctx.query;
+    try {
+        console.log(request)
+        var sql = `insert into vote(account,voteNum,voteId,date) values('${request.account}','${request.voteNum}','${request.voteId}','${request.date}');`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
 //账单管理
+router.get('/del/order', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `delete from  orderlist where id='${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/update/order', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `UPDATE orderList SET makeMoney='${request.makeMoney}',type='${request.type}' where id='${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
 router.get('/get/order', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
         var sql = ''
         sql = `SELECT id, account, makeMoney, type, date, status FROM orderlist where 1=1`
-        if(request.account&&request.account!=undefined) {
-            sql += ` and account = '${request.account}' or name = '${request.account}'`
+        if (request.account && request.account != undefined) {
+            sql += ` and account = '${request.account}'`
         }
-        if(request.type&&request.type!=undefined) {
+        if (request.type && request.type != undefined) {
             sql += ` and type = '${request.type}'`
         }
-        if(request.status&&request.status!=undefined) {
+        if (request.status && request.status != undefined) {
             sql += ` and status = '${request.status}'`
         }
-        if(request.date&&request.date!=undefined) {
+        if (request.date && request.date != undefined) {
             sql += ` and date = '${request.date}'`
         }
-        if(request.pageIndex&&request.pageIndex!=undefined) {
-            sql+=` ORDER BY id DESC limit ${request.pageIndex*request.pageSize},${request.pageSize}`
+        if (request.pageIndex && request.pageIndex != undefined) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
         }
         console.log(sql)
         var countSql = `select count(id) as sum from orderList`
@@ -63,18 +243,18 @@ router.get('/get/order', async (ctx, res, req) => {
         ctx.body = {
             code: 0,
             rows,
-            count:countRows[0].sum
+            count: countRows[0].sum
         }
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/get/userInCode', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -90,56 +270,63 @@ router.get('/get/userInCode', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 //用户管理
 router.get('/get/user', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
         var sql = ''
         var countSql = ''
-        sql += `SELECT id,account, password, inviteCode, dataError, age, gender, bankCard, money, avatar, vipCode, createDate, vipGrade, name, vipStatus, 
-        likeSquare,city,remake FROM users where 1=1`
+        sql += `SELECT * FROM users where 1=1`
         countSql = `select count(id) as sum from users where 1=1`
-        if(request.account&&request.account!=undefined) {
-            sql += ` and account = '${request.account}' or name = '${request.account}'`
-            countSql += ` and account = '${request.account}' or name = '${request.account}'`
+        if (request.account && request.account != undefined) {
+            sql += ` and account like '%${request.account}%' or name like '%${request.account}%'`
+            countSql += ` and account like '%${request.account}%' or name like '%${request.account}%'`
         }
-         if(request.gender&&request.gender!=undefined) {
-            sql += ` and gender = '${request.gender}'`
-            countSql += ` and gender = '${request.gender}'`
+        if (request.inviteCode && request.inviteCode != undefined) {
+            sql += ` and inviteCode = '${request.inviteCode}'`
+            countSql += ` and inviteCode = '${request.inviteCode}'`
         }
-         if(request.vipGrade&&request.vipGrade!=undefined) {
+        if (request.vipGrade && request.vipGrade != undefined) {
             sql += ` and vipGrade = '${request.vipGrade}'`
             countSql += ` and vipGrade = '${request.vipGrade}'`
+        } else {
+            sql += ` and vipGrade != '3'`
+            countSql += ` and vipGrade != '3'`
         }
-         if(request.date&&request.date!=undefined) {
+        if (request.remake && request.remake != undefined) {
+            
+            sql += ` and remake LIKE '%${request.remake}%'`
+            countSql += ` and remake LIKE '%${request.remake}%'`
+        }
+        if (request.date && request.date != undefined) {
             sql += ` and createData = '${request.date}'`
             countSql += ` and createData = '${request.date}'`
         }
-         if(request.pageIndex&&request.pageIndex!=undefined) {
-            sql +=` ORDER BY id DESC limit ${request.pageIndex*request.pageSize},${request.pageSize}`
+        if (request.pageIndex && request.pageIndex != undefined) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
         }
-        console.log(request.pageIndex&&request.pageIndex!=undefined)
+        console.log(request.pageIndex && request.pageIndex != undefined)
         console.log(sql)
-        
+
         const [rows] = await pool.execute(sql);
         const [countRows] = await pool.execute(countSql);
         //console.log(rows)
         ctx.body = {
             code: 0,
             rows,
-            count:countRows[0].sum
+            count: countRows[0].sum
         }
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -152,26 +339,27 @@ router.get('/update/user', async (ctx, res, req) => {
         var sql = `UPDATE users SET account='${request.account}',password='${request.password}',inviteCode='${request.inviteCode}',dataError='${request.dataError}',
         age='${request.age}',gender='${request.gender}',bankCard='${request.bankCard}',money='${request.money}',avatar='${request.avatar}',vipCode='${request.vipCode}',
         createDate='${request.createDate}',vipGrade='${request.vipGrade}',name='${request.name}',vipStatus='${request.vipStatus}',likeSquare='${request.likeSquare}',
-        city='${request.city}',remake='${request.remake}' 
+        city='${request.city}',remake='${request.remake}',lineCode='${request.lineCode}',pairAccount='${request.pairAccount}',pz='${request.pz}' 
+        ,pz1='${request.pz1}' ,pz2='${request.pz2}' ,voteFlag='${request.voteFlag}' 
         where id='${request.id}'`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         console.log(rows)
         ctx.body = {
-            code:0,
+            code: 0,
             rows
         }
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 //dating
 router.get('/add/dating', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -186,13 +374,13 @@ router.get('/add/dating', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/del/users', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -207,13 +395,13 @@ router.get('/del/users', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/del/dating', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -228,13 +416,13 @@ router.get('/del/dating', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/update/dating', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -250,39 +438,63 @@ router.get('/update/dating', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/get/dating', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
         var sql = `SELECT id,account, vipGrade, name, money, type, country FROM dating WHERE 1`
+        var countSql = `select count(id) as sum from dating where 1=1`
+        if (request.country) {
+            sql += ` and country = '${request.country}'`
+            countSql += ` and country = '${request.country}'`
+        }
+        if (request.type) {
+            sql += ` and type = '${request.type}'`
+            countSql += ` and type = '${request.type}'`
+        }
+        if (request.vipGrade) {
+            sql += ` and vipGrade = '${request.vipGrade}'`
+            countSql += ` and vipGrade = '${request.vipGrade}'`
+        }
+        if (request.pageIndex && request.pageIndex != undefined) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+        }
         console.log(sql)
         const [rows] = await pool.execute(sql);
+        const [countRows] = await pool.execute(countSql);
         console.log(rows)
         ctx.body = {
             code: 0,
-            rows
+            rows,
+            count: countRows[0].sum
         }
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 //square
 router.get('/add/square', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `insert into square(account, avatar, title, content, source, name,vipGrade,likes,comment,share,date) values('${request.account}','${request.avatar}','${request.title}','${request.content}','${request.source}','${request.name}','${request.vipGrade}','${request.likes}','${request.comment}','${request.share}','${request.date}');`
+        let accountR = Math.floor(Math.random() * 900000) + 100000
+        let random = Math.floor(Math.random() * 90000) + 10000
+        let random1 = Math.floor(Math.random() * 9000) + 1000
+        let random2 = Math.floor(Math.random() * 900) + 100
+        var sql = `insert into square(account, avatar, title, content, source, name,vipGrade,likes,comment,share,date,country) values('${accountR}','${request.avatar}',
+        "${request.title}","${request.content}",'${request.source}','${request.name}','${request.vipGrade}','${random}','${random1}','${random2}',
+        '${request.date}','${request.country}');`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         console.log(rows)
@@ -293,13 +505,13 @@ router.get('/add/square', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/del/square', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -314,17 +526,18 @@ router.get('/del/square', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/update/square', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
+    
     try {
         var sql = `update square set account='${request.account}',vipGrade='${request.vipGrade}',title="${request.title}",content="${request.content}",source='${request.source}',
-        name='${request.name}',likes='${request.likes}',comment='${request.comment}',share='${request.share}',date='${request.date}' where id='${request.id}'`
+        name='${request.name}',date='${request.date}',country='${request.country}' where id='${request.id}'`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         console.log(rows)
@@ -335,35 +548,55 @@ router.get('/update/square', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/get/square', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `SELECT * FROM square ORDER BY id DESC`
+        var sql = `SELECT * FROM square where 1=1`
+        var countSql = `select count(id) as sum from square`
+        if (request.country) {
+            sql += ` and country = '${request.country}'`
+            countSql += ` and country = '${request.country}'`
+        }
+        if (request.vipGrade) {
+            sql += ` and vipGrade = '${request.vipGrade}'`
+            countSql += ` and vipGrade = '${request.vipGrade}'`
+        }
+        if (request.date) {
+            sql += ` and date = '${request.date}'`
+            countSql += ` and date = '${request.date}'`
+        }
+        if (request.pageIndex && request.pageIndex != undefined) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+            countSql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+        }
         console.log(sql)
+        
         const [rows] = await pool.execute(sql);
+        const [countRows] = await pool.execute(countSql);
         console.log(rows)
         ctx.body = {
             code: 0,
-            rows
+            rows,
+            count: countRows[0].sum
         }
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 //LP
 router.get('/add/convension', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -378,13 +611,13 @@ router.get('/add/convension', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/del/convension', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -399,16 +632,16 @@ router.get('/del/convension', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/update/convension', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
-    if(request.xw == '') {
-        request.xw="1"
+    if (request.xw == '') {
+        request.xw = "1"
     }
     try {
         console.log(request)
@@ -423,34 +656,44 @@ router.get('/update/convension', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/get/convension', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
         var sql = `SELECT account, height, weight, xw, job, city, avatar, jj, id, video, name,gender FROM convension WHERE 1`
+        var countSql = `select count(id) as sum from convension where 1=1`
+        if (request.gender) {
+            sql += ` and gender = '${request.gender}'`
+            countSql += ` and gender = '${request.gender}'`
+        }
+        if (request.pageIndex) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+        }
         console.log(sql)
         const [rows] = await pool.execute(sql);
-        console.log(rows)
+        const [countRows] = await pool.execute(countSql);
+        console.log(countRows)
         ctx.body = {
             code: 0,
-            rows
+            rows,
+            count: countRows[0].sum
         }
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 router.get('/get/login', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -465,7 +708,7 @@ router.get('/get/login', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -473,7 +716,7 @@ router.get('/get/login', async (ctx, res, req) => {
 //-------------------------
 
 router.get('/get/get_user', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -488,7 +731,7 @@ router.get('/get/get_user', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -507,7 +750,7 @@ router.get('/get/get_letter', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -527,7 +770,7 @@ router.get('/get/dataError', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -546,27 +789,7 @@ router.get('/get/get_order', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
-            error
-        }
-    }
-})
-//私约
-router.get('/get/convension', async (ctx, res, req) => {
-    let request = ctx.query;
-    try {
-        console.log(request)
-        var sql = `select * from convension limit ${request.pageIndex*5},5`
-        console.log(sql)
-        const [rows] = await pool.execute(sql);
-        ctx.body = {
-            code: 0,
-            rows
-        }
-    } catch (error) {
-        console.log(error)
-        ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -597,8 +820,8 @@ router.get('/set/updateMoney', async (ctx, res, req) => {
     try {
         console.log(request)
         var sql = ''
-        if(request.type == 0) {
-            sql += `update users set money = money + CONVERT(${request.makeMoney}, FLOAT) where account = '${request.account}'`
+        if (request.type == 0) {
+            sql += `update users set money = money + CONVERT(${request.makeMoney}, FLOAT), voteFlag = ${request.voteFlag} where account = '${request.account}'`
         } else if (request.type == 1) {
             sql += `update users set money = money - CONVERT(${request.makeMoney}, FLOAT) where account = '${request.account}'`
         }
@@ -611,7 +834,7 @@ router.get('/set/updateMoney', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -621,8 +844,7 @@ router.get('/set/validOrder', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `update orderList set status = '${request.status}' where id='${request.id}'`
-       
+        var sql = `update orderList set status = '${request.status}',voteFlag = '1' where id='${request.id}'`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         ctx.body = {
@@ -632,7 +854,7 @@ router.get('/set/validOrder', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -643,9 +865,9 @@ router.get('/get/set_order', async (ctx, res, req) => {
     try {
         console.log(request)
         var sql = ''
-        if(request.type == 0) {
+        if (request.type == 0) {
             sql = `insert into orderList(account,makeMoney,type,date) values('${request.account}',${request.makeMoney},${request.type},'${tools.DFormat(new Date())}');`
-        } else if(request.type == 1) {
+        } else if (request.type == 1) {
             sql = `insert into orderList(account,makeMoney,type,date) values('${request.account}',${request.makeMoney},${request.type},'${tools.DFormat(new Date())}');`
         }
         console.log(sql)
@@ -657,7 +879,7 @@ router.get('/get/set_order', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -677,7 +899,7 @@ router.get('/get/get_gift', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -688,7 +910,7 @@ router.get('/get/likeSquare', async (ctx, res, req) => {
     try {
         console.log(request)
         var sql = ''
-        if(request.flag == 'true') {
+        if (request.flag == 'true') {
             sql = `update users set likeSquare = REPLACE(likeSquare, '${request.likeSquare}', '') where account = '${request.account}'`;
         } else {
             sql = `update users set likeSquare = CONCAT(likeSquare, ${request.likeSquare}) where account = '${request.account}'`;
@@ -702,7 +924,7 @@ router.get('/get/likeSquare', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -711,7 +933,7 @@ router.get('/get/get_square', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `select * from square limit ${request.pageIndex*5},5`;
+        var sql = `select * from square limit ${request.pageIndex * 5},5`;
         console.log(sql)
         const [rows] = await pool.execute(sql);
         ctx.body = {
@@ -721,14 +943,14 @@ router.get('/get/get_square', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
 })
 //获取公告
 router.get('/get/get_dating', async (ctx, res, req) => {
-    console.log('正在访问:'+ctx.path)
+    console.log('正在访问:' + ctx.path)
     let request = ctx.query;
     try {
         console.log(request)
@@ -743,7 +965,7 @@ router.get('/get/get_dating', async (ctx, res, req) => {
     } catch (error) {
         console.log(error)
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -760,20 +982,20 @@ router.get('/get/login', async (ctx) => {
             const [rows] = await pool.execute(sql);
             const [exsitRows] = await pool.execute(exsitSql);
             console.log(rows)
-            if(exsitRows.length>0&&rows.length<1) {
+            if (exsitRows.length > 0 && rows.length < 1) {
                 ctx.body = {
                     code: 1,
-                    msg:'密码错误'
+                    msg: '密码错误'
                 }
-            } else if(rows.length>0){
+            } else if (rows.length > 0) {
                 ctx.body = {
                     code: 0,
                     rows
                 }
-            } else if(exsitRows.length<1) {
+            } else if (exsitRows.length < 1) {
                 ctx.body = {
                     code: 1,
-                    msg:'你还没有注册'
+                    msg: '你还没有注册'
                 }
             }
         } else if (request.type == 1) {
@@ -789,7 +1011,7 @@ router.get('/get/login', async (ctx) => {
                 }
                 return
             }
-            var sql = "INSERT INTO `users`(`id`, `account`, `password`, `createDate`, `inviteCode`,`gender`) VALUES ('','" + request.account + "','" + request.pwd + "','" + tools.DFormat(new Date()) + "','" + request.inviteCode + "','"+request.gender+"')"
+            var sql = "INSERT INTO `users`(`id`, `account`, `password`, `createDate`, `inviteCode`,`gender`) VALUES ('','" + request.account + "','" + request.pwd + "','" + tools.DFormat(new Date()) + "','" + request.inviteCode + "','" + request.gender + "')"
             const [rows] = await pool.execute(sql);
             console.log('[rows]', [rows])
             console.log([rows][0])
@@ -822,7 +1044,7 @@ router.get('/get/register', async (ctx) => {
 
     } catch (error) {
         ctx.body = {
-            code:1,
+            code: 1,
             error
         }
     }
@@ -833,7 +1055,7 @@ router.get('/get/del_user', async (ctx) => {
     var sql = `select * from users`;
     const [rows] = await pool.execute(sql);
     ctx.body = {
-        code:1,
+        code: 1,
         rows
     }
 })

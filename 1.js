@@ -37,6 +37,23 @@ router.post('/upload', async (ctx, req) => {
     }
 
 });
+router.post('/upload/pz', async (ctx, req) => { 
+    try {
+        // 对于文件上传，文件数据在 ctx.request.files 中
+        // const file = ctx.request.files.file;
+        const file = ctx.request?.files?.file;
+        console.log("file", file)
+        const textField = ctx.request.body.textField; // 处理普通字段
+        const reader = await fs.createReadStream(file.path); // 创建读取流
+        const upStream = fs.createWriteStream(path.join(__dirname+'/uploads/mine', 'pz', file.name)); // 指定保存路径
+        reader.pipe(upStream); // 将读取流管道到写入流
+        ctx.body = { code: 0, msg: '上传完毕', file: file.name };
+
+    } catch (error) {
+        
+    }
+
+});
 const api = require('./api/api');
 const { nextTick } = require('process');
 
@@ -51,10 +68,13 @@ app.use(static(path.join(__dirname, './uploads/PL/party/yc')))
 app.use(static(path.join(__dirname, './uploads/PL/party/yt')))
 app.use(static(path.join(__dirname, './uploads/PL/party/bs')))
 app.use(static(path.join(__dirname, './uploads/mine/avatar')))
+app.use(static(path.join(__dirname, './uploads/mine/pz')))
+app.use(static(path.join(__dirname, './uploads/gift')))
 app.use(static(path.join(__dirname, './views/lp_web')))
 // app.use(static('./uploads'))
 
 // 启动 Koa 服务器
-app.listen(8888, () => {
-    console.log('Server running on http://localhost:8888');
+let port = 8888
+app.listen(port, () => {
+    console.log('Server running on http://localhost:'+port);
 });
