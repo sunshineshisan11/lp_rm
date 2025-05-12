@@ -69,10 +69,17 @@ app.use(static(path.join(__dirname, './uploads/PL/party/yt')))
 app.use(static(path.join(__dirname, './uploads/PL/party/bs')))
 app.use(static(path.join(__dirname, './uploads/mine/avatar')))
 app.use(static(path.join(__dirname, './uploads/mine/pz')))
+app.use(static(path.join(__dirname, './uploads/mine')))
 app.use(static(path.join(__dirname, './uploads/gift')))
 app.use(static(path.join(__dirname, './views/lp_web')))
+app.use(static(path.join(__dirname, './views/lp_om_web')))
 // app.use(static('./uploads'))
-
+app.use(async (ctx) => {
+    // 当有前端请求访问该接口时，在控制台打印一行字
+    console.log('前端访问了接口');
+    // 返回响应给前端
+    ctx.body = '接口已访问';
+});
 // 启动 Koa 服务器
 let port = 8888
 app.listen(port, () => {

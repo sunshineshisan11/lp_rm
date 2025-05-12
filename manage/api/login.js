@@ -32,6 +32,204 @@ const tools = require('../../tools/index')
 //         }
 //     }
 // })
+//vip卡
+router.get('/add/vip', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `insert into vip(name,type,img) values('${request.name}','${request.type}','${request.img}')`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/del/vip', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `delete from vip where id  = ${request.id}`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/set/vip', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `update vip set name = '${request.name}', type = '${request.type}',img = '${request.img}' where id = '${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/get/vip', async (ctx, res, req) => {
+    console.log('正在访问:' + ctx.path)
+    let request = ctx.query;
+    try {
+        console.log(request)
+        var sql = `select * from vip where 1=1`
+        var countSql = `select count(id) as sum from vip where 1=1`
+        if (request.name) {
+            sql += ` and name like '%${request.name}%'`
+            countSql += ` and name like '%${request.name}%'`
+        }
+        if (request.type) {
+            sql += ` and type = '${request.type}'`
+            countSql += ` and type = '${request.type}'`
+        }
+        if (request.pageIndex) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+        }
+        console.log(countSql)
+        const [rows] = await pool.execute(sql);
+        const [countRows] = await pool.execute(countSql);
+        console.log(countRows)
+        ctx.body = {
+            code: 0,
+            rows,
+            count: countRows[0].sum
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+//员工
+router.get('/add/staff', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `insert into staff(name,inviteCode) values('${request.name}','${request.inviteCode}')`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/del/staff', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `delete from staff where id  = ${request.id}`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/set/staff', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `update staff set name = '${request.name}', inviteCode = '${request.inviteCode}' where id = '${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/get/staff', async (ctx, res, req) => {
+    console.log('正在访问:' + ctx.path)
+    let request = ctx.query;
+    try {
+        console.log(request)
+        var sql = `select * from staff where 1=1`
+        var countSql = `select count(id) as sum from staff where 1=1`
+        if (request.name) {
+            sql += ` and name like '%${request.name}%'`
+            countSql += ` and name like '%${request.name}%'`
+        }
+        if (request.inviteCode) {
+            sql += ` and inviteCode = '${request.inviteCode}'`
+            countSql += ` and inviteCode = '${request.inviteCode}'`
+        }
+        if (request.pageIndex) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+        }
+        console.log(countSql)
+        const [rows] = await pool.execute(sql);
+        const [countRows] = await pool.execute(countSql);
+        console.log(countRows)
+        ctx.body = {
+            code: 0,
+            rows,
+            count: countRows[0].sum
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
 //系统
 router.get('/set/sys', async (ctx, res, req) => {
     let request = ctx.query;
@@ -121,18 +319,20 @@ router.get('/get/vote', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `select id,account,voteNum,voteId,date from vote where 1=1`
+        var sql = `select vote.voteId,vote.account,vote.voteNum,users.staffName,vote.date,users.dataError from vote inner join users on users.account = vote.account`
+        var countSql = `select count(id) as sum from vote where 1=1`
         if (request.account && request.account != undefined) {
-            sql += ` and account = '${request.account}'`
+            sql += ` and vote.account = '${request.account}'`
+            countSql += ` and vote.account = '${request.account}'`
         }
         if (request.voteNum && request.voteNum != undefined) {
-            sql += ` and voteNum = '${request.voteNum}'`
+            sql += ` and vote.voteNum = '${request.voteNum}'`
+            countSql += ` and vote.account = '${request.account}'`
         }
         if (request.pageIndex && request.pageIndex != undefined) {
-            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+            sql += ` ORDER BY vote.id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
         }
         console.log(sql)
-        var countSql = `select count(id) as sum from vote`
         const [rows] = await pool.execute(sql);
         const [countRows] = await pool.execute(countSql);
         console.log(rows)
@@ -219,24 +419,32 @@ router.get('/get/order', async (ctx, res, req) => {
     try {
         console.log(request)
         var sql = ''
-        sql = `SELECT id, account, makeMoney, type, date, status FROM orderlist where 1=1`
+        sql = `select u.id as uid,o.id as oid,o.*,u.staffName from orderlist o inner join users u on u.account = o.account where 1=1`
+        var countSql = `select count(o.id) as sum from orderlist o inner join users u on u.account = o.account where 1=1`
+        if (request.id) {
+            sql += ` and u.id = '${request.id}'`
+            countSql += ` and u.id = '${request.id}'`
+        }
         if (request.account && request.account != undefined) {
-            sql += ` and account = '${request.account}'`
+            sql += ` and o.account like '%${request.account}%'`
+            countSql += ` and o.account like '%${request.account}%'`
         }
         if (request.type && request.type != undefined) {
-            sql += ` and type = '${request.type}'`
+            sql += ` and o.type = '${request.type}'`
+            countSql += ` and o.type = '${request.type}'`
         }
         if (request.status && request.status != undefined) {
-            sql += ` and status = '${request.status}'`
+            sql += ` and o.status = '${request.status}'`
+            countSql += ` and o.status = '${request.status}'`
         }
         if (request.date && request.date != undefined) {
-            sql += ` and date = '${request.date}'`
+            sql += ` and o.date = '${request.date}'`
+            countSql += ` and o.date = '${request.date}'`
         }
         if (request.pageIndex && request.pageIndex != undefined) {
-            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+            sql += ` ORDER BY o.id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
         }
         console.log(sql)
-        var countSql = `select count(id) as sum from orderList`
         const [rows] = await pool.execute(sql);
         const [countRows] = await pool.execute(countSql);
         console.log(rows)
@@ -258,8 +466,7 @@ router.get('/get/userInCode', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `select id,account, password, inviteCode, dataError, age, gender, bankCard, money, avatar, vipCode, createDate, vipGrade, name, vipStatus, 
-        likeSquare from users where inviteCode = ${request.inviteCode} and vipGrade != 3`
+        var sql = `select * from staff where inviteCode = ${request.inviteCode}`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         console.log(rows)
@@ -285,9 +492,13 @@ router.get('/get/user', async (ctx, res, req) => {
         var countSql = ''
         sql += `SELECT * FROM users where 1=1`
         countSql = `select count(id) as sum from users where 1=1`
+        if (request.id) {
+            sql += ` and id like '%${request.id}%'`
+            countSql += ` and id like '%${request.id}%'`
+        }
         if (request.account && request.account != undefined) {
-            sql += ` and account like '%${request.account}%' or name like '%${request.account}%'`
-            countSql += ` and account like '%${request.account}%' or name like '%${request.account}%'`
+            sql += ` and account like '%${request.account}%' or name like '%${request.account}%' or staffName like '%${request.account}%'`
+            countSql += ` and account like '%${request.account}%' or name like '%${request.account}%' or staffName like '%${request.account}%'`
         }
         if (request.inviteCode && request.inviteCode != undefined) {
             sql += ` and inviteCode = '${request.inviteCode}'`
@@ -301,9 +512,12 @@ router.get('/get/user', async (ctx, res, req) => {
             countSql += ` and vipGrade != '3'`
         }
         if (request.remake && request.remake != undefined) {
-            
             sql += ` and remake LIKE '%${request.remake}%'`
             countSql += ` and remake LIKE '%${request.remake}%'`
+        }
+        if (request.staff) {
+            sql += ` and staff LIKE '%${request.staff}%'`
+            countSql += ` and staff LIKE '%${request.staff}%'`
         }
         if (request.date && request.date != undefined) {
             sql += ` and createData = '${request.date}'`
@@ -340,7 +554,7 @@ router.get('/update/user', async (ctx, res, req) => {
         age='${request.age}',gender='${request.gender}',bankCard='${request.bankCard}',money='${request.money}',avatar='${request.avatar}',vipCode='${request.vipCode}',
         createDate='${request.createDate}',vipGrade='${request.vipGrade}',name='${request.name}',vipStatus='${request.vipStatus}',likeSquare='${request.likeSquare}',
         city='${request.city}',remake='${request.remake}',lineCode='${request.lineCode}',pairAccount='${request.pairAccount}',pz='${request.pz}' 
-        ,pz1='${request.pz1}' ,pz2='${request.pz2}' ,voteFlag='${request.voteFlag}' 
+        ,pz1='${request.pz1}' ,pz2='${request.pz2}',voteFlag='${request.voteFlag}',staffName='${request.staffName}' 
         where id='${request.id}'`
         console.log(sql)
         const [rows] = await pool.execute(sql);
@@ -559,7 +773,7 @@ router.get('/get/square', async (ctx, res, req) => {
     try {
         console.log(request)
         var sql = `SELECT * FROM square where 1=1`
-        var countSql = `select count(id) as sum from square`
+        var countSql = `select count(id) as sum from square where 1=1`
         if (request.country) {
             sql += ` and country = '${request.country}'`
             countSql += ` and country = '${request.country}'`
@@ -574,10 +788,8 @@ router.get('/get/square', async (ctx, res, req) => {
         }
         if (request.pageIndex && request.pageIndex != undefined) {
             sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
-            countSql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
         }
         console.log(sql)
-        
         const [rows] = await pool.execute(sql);
         const [countRows] = await pool.execute(countSql);
         console.log(rows)
@@ -779,7 +991,7 @@ router.get('/get/get_order', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `select makeMoney,date,type,status from orderList where account = '${request.account}'`
+        var sql = `select o.*,u.staffName from users u inner join orderlist o on u.account = o.account where u.account = '${request.account}'`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         ctx.body = {
@@ -844,7 +1056,7 @@ router.get('/set/validOrder', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `update orderList set status = '${request.status}',voteFlag = '1' where id='${request.id}'`
+        var sql = `update orderList set status = '${request.status}' where id='${request.id}'`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         ctx.body = {
@@ -864,12 +1076,7 @@ router.get('/get/set_order', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = ''
-        if (request.type == 0) {
-            sql = `insert into orderList(account,makeMoney,type,date) values('${request.account}',${request.makeMoney},${request.type},'${tools.DFormat(new Date())}');`
-        } else if (request.type == 1) {
-            sql = `insert into orderList(account,makeMoney,type,date) values('${request.account}',${request.makeMoney},${request.type},'${tools.DFormat(new Date())}');`
-        }
+        var sql = `insert into orderList(account,makeMoney,type,status,date) values('${request.account}',${request.makeMoney},${request.type},${request.status},'${request.date}');`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         ctx.body = {

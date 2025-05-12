@@ -5,9 +5,13 @@ const httpProxy = require('http-proxy');
 
 // 读取证书和私钥文件
 const options = {
-    key: fs.readFileSync(path.join(__dirname, 'cert', 's292781187_lovepartya.com_server.key')),
-    cert: fs.readFileSync(path.join(__dirname, 'cert', 's292781187_lovepartya.com_server.crt')),
+    key: fs.readFileSync(path.join(__dirname, 'cert', 's290205165_meet.lovepartya.com_server.key')),
+    cert: fs.readFileSync(path.join(__dirname, 'cert', 's290205165_meet.lovepartya.com_server.crt')),
 };
+// const options = {
+//     key: fs.readFileSync(path.join(__dirname, 'cert', 's292781187_lovepartya.com_server.key')),
+//     cert: fs.readFileSync(path.join(__dirname, 'cert', 's292781187_lovepartya.com_server.crt')),
+// };
 
 // 如果有中间证书文件，也需要读取并添加到配置中
 if (fs.existsSync(path.join(__dirname, 'cert', 'intermediate_certificate.crt'))) {

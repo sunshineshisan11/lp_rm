@@ -10,6 +10,105 @@ app.use(express.static("public"))
 const pool = require('../db');
 const tools = require('../tools/index')
 
+//vip
+router.get('/add/vip', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `insert into vip(name,type,img) values('${request.name}','${request.type}','${request.img}')`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/del/vip', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `delete from vip where id  = ${request.id}`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/set/vip', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `update vip set name = '${request.name}', type = '${request.type}',img = '${request.img}' where id = '${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/get/vip', async (ctx, res, req) => {
+    console.log('正在访问:' + ctx.path)
+    let request = ctx.query;
+    try {
+        console.log(request)
+        var sql = `select * from vip where 1=1`
+        var countSql = `select count(id) as sum from vip where 1=1`
+        if (request.name) {
+            sql += ` and name like '%${request.name}%'`
+            countSql += ` and name like '%${request.name}%'`
+        }
+        if (request.type) {
+            sql += ` and type = '${request.type}'`
+            countSql += ` and type = '${request.type}'`
+        }
+        if (request.pageIndex) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+        }
+        console.log(countSql)
+        const [rows] = await pool.execute(sql);
+        const [countRows] = await pool.execute(countSql);
+        console.log(countRows)
+        ctx.body = {
+            code: 0,
+            rows,
+            count: countRows[0].sum
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
 //修改凭证
 router.get('/get/set_pz', async (ctx, res, req) => {
     let request = ctx.query;
@@ -168,8 +267,7 @@ router.get('/get/userInCode', async (ctx, res, req) => {
     console.log(request.user + '正在访问:' + ctx.path)
     try {
         console.log(request)
-        var sql = `select id,account, password, inviteCode, dataError, age, gender, bankCard, money, avatar, vipCode, createDate, vipGrade, name, vipStatus, 
-        likeSquare,lineCode from users where inviteCode = ${request.inviteCode} and vipGrade = 3`
+        var sql = `select * from staff where inviteCode = ${request.inviteCode}`
         console.log(sql)
         const [rows] = await pool.execute(sql);
         console.log(rows)
@@ -234,7 +332,7 @@ router.get('/get/get_user', async (ctx, res, req) => {
     console.log(request.user + '正在访问:' + ctx.path)
     try {
         console.log(request)
-        var sql = `select * from users where account = '${request.account}'`;
+        var sql = `select *  from users where account = '${request.account}'`;
         console.log(sql)
         const [rows] = await pool.execute(sql);
         console.log(rows)
