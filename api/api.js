@@ -1,9 +1,12 @@
 const Router = require('@koa/router');
 const login = require('./login')
+const tools = require('../tools/index')
 // const home = require('./home')
+tools.maodian()
 const until = require('./util')
 const router = new Router();
 const pool = require('../db');
+
 // router.get('/get/get_users', async(ctx) =>{
 //     let request = ctx.query;
 //     console.log(request);

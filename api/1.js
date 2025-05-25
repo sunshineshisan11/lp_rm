@@ -61,7 +61,7 @@ const { nextTick } = require('process');
 router.use('/api', api.routes()).use(api.allowedMethods());
 app.use(api.routes()).use(api.allowedMethods());
 app.use(router.routes()).use(router.allowedMethods());
-let docPath='./uploads'
+let docPath='./upload'
 app.use(static(path.join(__dirname, docPath)))
 app.use(static(path.join(__dirname, docPath+'/square')))
 app.use(static(path.join(__dirname, docPath+'/PL')))

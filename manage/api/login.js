@@ -32,6 +32,105 @@ const tools = require('../../tools/index')
 //         }
 //     }
 // })
+//每日公告
+router.get('/add/bulletin', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `insert into bulletin(date,clientId,content) values('${request.date}','${request.clientId}','${request.content}')`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/del/bulletin', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `delete from bulletin where id  = ${request.id}`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/set/bulletin', async (ctx, res, req) => {
+    let request = ctx.query;
+    console.log(request)
+    try {
+        console.log(request)
+        var sql = `update bulletin set name = '${request.date}', type = '${request.clientId}',img = '${request.content}' where id = '${request.id}'`
+        console.log(sql)
+        const [rows] = await pool.execute(sql);
+        console.log(rows)
+        ctx.body = {
+            code: 0,
+            rows
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
+router.get('/get/bulletin', async (ctx, res, req) => {
+    console.log('正在访问:' + ctx.path)
+    let request = ctx.query;
+    try {
+        console.log(request)
+        var sql = `select * from bulletin where 1=1`
+        var countSql = `select count(id) as sum from bulletin where 1=1`
+        if (request.clientId) {
+            sql += ` and clientId like '%${request.clientId}%'`
+            countSql += ` and clientId like '%${request.clientId}%'`
+        }
+        if (request.content) {
+            sql += ` and clientId like '%${request.content}%'`
+            countSql += ` and content like '%${request.content}%'`
+        }
+        if (request.pageIndex) {
+            sql += ` ORDER BY id DESC limit ${request.pageIndex * request.pageSize},${request.pageSize}`
+        }
+        console.log(countSql)
+        const [rows] = await pool.execute(sql);
+        const [countRows] = await pool.execute(countSql);
+        console.log(countRows)
+        ctx.body = {
+            code: 0,
+            rows,
+            count: countRows[0].sum
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.body = {
+            code: 1,
+            error
+        }
+    }
+})
 //vip卡
 router.get('/add/vip', async (ctx, res, req) => {
     let request = ctx.query;
@@ -319,7 +418,7 @@ router.get('/get/vote', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `select vote.voteId,vote.account,vote.voteNum,users.staffName,vote.date,users.dataError from vote inner join users on users.account = vote.account`
+        var sql = `select users.id uid,vote.voteId,vote.account,vote.voteNum,users.staffName,vote.date,users.dataError from vote inner join users on users.account = vote.account`
         var countSql = `select count(id) as sum from vote where 1=1`
         if (request.account && request.account != undefined) {
             sql += ` and vote.account = '${request.account}'`

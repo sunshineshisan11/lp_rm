@@ -5,8 +5,8 @@ const httpProxy = require('http-proxy');
 
 // 读取证书和私钥文件
 const options = {
-    key: fs.readFileSync(path.join(__dirname, 'cert', 's292781187_lovepartya.com_server.key')),
-    cert: fs.readFileSync(path.join(__dirname, 'cert', 's292781187_lovepartya.com_server.crt')),
+    key: fs.readFileSync(path.join(__dirname, 'cert', 's297656039_soulmatemeet.vip_server.key')),
+    cert: fs.readFileSync(path.join(__dirname, 'cert', 's297656039_soulmatemeet.vip_server.crt')),
 };
 
 // 如果有中间证书文件，也需要读取并添加到配置中
