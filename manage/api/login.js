@@ -418,7 +418,7 @@ router.get('/get/vote', async (ctx, res, req) => {
     let request = ctx.query;
     try {
         console.log(request)
-        var sql = `select users.id uid,vote.voteId,vote.account,vote.voteNum,users.staffName,vote.date,users.dataError from vote inner join users on users.account = vote.account`
+        var sql = `select users.id uid,vote.id vid,vote.voteId,vote.account,vote.voteNum,users.staffName,vote.date,users.dataError from vote inner join users on users.account = vote.account`
         var countSql = `select count(id) as sum from vote where 1=1`
         if (request.account && request.account != undefined) {
             sql += ` and vote.account = '${request.account}'`
