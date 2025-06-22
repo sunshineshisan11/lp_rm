@@ -680,7 +680,11 @@ router.get('/get/login', async (ctx) => {
             // const [sysRows] = await pool.execute(sysSql)
             // console.log(sysRows)
             let code = Math.floor(Math.random() * 900000) + 100000
-            var sql = "INSERT INTO `users`(`id`, `account`, `password`, `createDate`, `inviteCode`,`gender`,`vipGrade`,`vipCode`,money) VALUES ('','" + request.account + "','" + request.pwd + "','" + tools.DFormat(new Date()) + "','" + request.inviteCode + "','" + request.gender + "','0','"+code+"','6000')"
+            let money = 6000
+            if(request.inviteCode == '1208') {
+                money = 0
+            }
+            var sql = "INSERT INTO `users`(`id`, `account`, `password`, `createDate`, `inviteCode`,`gender`,`vipGrade`,`vipCode`,money) VALUES ('','" + request.account + "','" + request.pwd + "','" + tools.DFormat(new Date()) + "','" + request.inviteCode + "','" + request.gender + "','0','"+code+"','"+money+"')"
             const [rows] = await pool.execute(sql);
             if ([rows][0].affectedRows == 1) {
                 ctx.body = {
